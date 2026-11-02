@@ -4,7 +4,7 @@ title: '#4471 is three problems, not one'
 owner: Eduardo Lobo
 status: open
 reviewed: 2026-11-02
-signature: Eduardo Lobo
+signature: v1.eyJzdWIiOiIxMjcwNyIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaWF0IjoxNzkzNjMzNzI4LCJleHAiOjE3OTM3MjAxMjh9.032jDqlD43-SMc_G_xX35Ufj6uwxHWsWKg-lU5prq0c
 ---
 
 <script>
@@ -14,12 +14,15 @@ signature: Eduardo Lobo
 </script>
 
 The [#4471 page](/kb/incidents/4471) calls every report one parser bug with one fix queued. The
-reports describe three different problems, and only one of them is the parser. Each now has its
-own ticket.
+reports describe three different problems, and only one of them is the parser. Each has its own
+ticket.
+
+Engineering closed #4471 on 5 October: the parser is fixed (`fix(dates): parse dd/mm for eu
+locales`) and the booking-v3 form is retired, so its hint bug is won't fix.
 
 <Callout kind="warn">
-The queued parser fix will not close #4471. The booking-v3 form and the one-day moves need their
-own fixes.
+Closing #4471 does not cover the one-day moves. Neither change touches them, so their ticket stays
+open.
 </Callout>
 
 ## The split
