@@ -1,0 +1,47 @@
+---
+layout: runbook
+title: '#4471 is three problems, not one'
+owner: Eduardo Lobo
+status: open
+reviewed: 2026-11-02
+signature: Eduardo Lobo
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+</script>
+
+The [#4471 page](/kb/incidents/4471) calls every report one parser bug with one fix queued. The
+reports describe three different problems, and only one of them is the parser. Each now has its
+own ticket.
+
+<Callout kind="warn">
+The queued parser fix will not close #4471. The booking-v3 form and the one-day moves need their
+own fixes.
+</Callout>
+
+## The split
+
+<ProblemTable ticket={4471} />
+
+## How each report was placed
+
+1. Drop duplicate rows. The export comes in overlapping pages, so one id can appear twice.
+2. A report the desk read as a one-day move (`desk-notes.json`) is `timezone`. Its day and month
+   are not swapped, so the parser cannot explain it.
+3. Every other report takes its tenant's cause from `causes.ts`: `hint` when it came through a
+   booking-v3 form, `parser` otherwise.
+
+The intake tag is not used. Intake guesses from the reporter's browser, and the cause depends on
+the tenant.
+
+## Why they ended up together
+
+Triage merges on subject line alone ([decision 0001](/kb/decisions/0001-dedupe-by-subject)). All
+three problems produce subjects like "Wrong day on the invite", so subject matching put them in
+one ticket. The existing cause table shows the `hint` row with no ticket of its own and leaves
+the one-day moves in a footnote under `parser`.
+
+<RenderStamp {signature} />

@@ -34,3 +34,7 @@ Support desk. Decision records: whoever signed them.
 ---
 
 Exported 2026-10-04 from the `support` repo, `apps/kb/` → `src/`.
+
+## #4471 split
+
+`src/routes/kb/incidents/4471/problems/+page.svx` splits #4471 into three problems, one GitHub issue each. The page as the desk sees it, rendered with `yarn build`: `rendered/kb/incidents/4471/problems/index.html`.
