@@ -10,10 +10,11 @@ export const PROBLEMS: { problem: Problem; title: string; issue: number }[] = [
   { problem: 'timezone', title: 'Bookings move by one day: time zone, not a month flip', issue: 3 },
 ];
 
-// A one-day move is not a day/month swap, so the tenant's cause does not apply to it.
-export function problemOf(r: Report, t: Tenant | undefined, oneDayMove: readonly string[]): Problem {
-  if (oneDayMove.includes(r.id)) return 'timezone';
-  return causeOf(r, t) ?? 'unplaced';
+// The desk counts a report under its tenant's cause, one-day moves included (CauseTable).
+// A one-day move is also its own problem: its day and month are not swapped.
+export function problemsOf(r: Report, t: Tenant | undefined, oneDayMove: readonly string[]): Problem[] {
+  const filed = causeOf(r, t) ?? 'unplaced';
+  return oneDayMove.includes(r.id) ? [filed, 'timezone'] : [filed];
 }
 
 export type ProblemRow = {
@@ -26,6 +27,7 @@ export type ProblemRow = {
   firstSeen: string;
   lastSeen: string;
   intakeAgrees: number;
+  alsoTimezone: number;
 };
 
 export function splitByProblem(
@@ -35,8 +37,7 @@ export function splitByProblem(
 ): ProblemRow[] {
   const by = new Map<Problem, Report[]>();
   for (const r of reports) {
-    const p = problemOf(r, tenantOf(r), oneDayMove);
-    by.set(p, [...(by.get(p) ?? []), r]);
+    for (const p of problemsOf(r, tenantOf(r), oneDayMove)) by.set(p, [...(by.get(p) ?? []), r]);
   }
   return [...by.entries()]
     .map(([problem, rs]) => {
@@ -52,6 +53,7 @@ export function splitByProblem(
         firstSeen: days[0],
         lastSeen: days[days.length - 1],
         intakeAgrees: rs.filter((r) => r.meta.intakeTag === problem).length,
+        alsoTimezone: problem === 'timezone' ? 0 : rs.filter((r) => oneDayMove.includes(r.id)).length,
       };
     })
     .sort((a, b) => b.reports.length - a.reports.length);

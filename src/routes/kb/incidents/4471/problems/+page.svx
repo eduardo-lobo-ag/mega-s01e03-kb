@@ -29,10 +29,10 @@ own fixes.
 ## How each report was placed
 
 1. Drop duplicate rows. The export comes in overlapping pages, so one id can appear twice.
-2. A report the desk read as a one-day move (`desk-notes.json`) is `timezone`. Its day and month
-   are not swapped, so the parser cannot explain it.
-3. Every other report takes its tenant's cause from `causes.ts`: `hint` when it came through a
-   booking-v3 form, `parser` otherwise.
+2. Every report takes its tenant's cause from `causes.ts`: `hint` when it came through a
+   booking-v3 form, `parser` otherwise. This is how the desk's own cause table counts.
+3. A report the desk read as a one-day move (`desk-notes.json`) is also `timezone`. Its day and
+   month are not swapped, so the parser cannot explain it. It stays in its tenant's count too.
 
 The intake tag is not used. Intake guesses from the reporter's browser, and the cause depends on
 the tenant.

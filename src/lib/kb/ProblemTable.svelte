@@ -10,12 +10,12 @@
   const rows = (reports as Report[]).filter((r) => r.mergedInto === ticket);
   const merged = uniqueById(rows);
   const problems = splitByProblem(merged, tenantOf, notes.oneDayMove);
-  const total = problems.reduce((n, p) => n + p.reports.length, 0);
+  const placed = new Set(problems.flatMap((p) => p.reports.map((r) => r.id))).size;
 </script>
 
 <p class="sum">
   <strong>{merged.length}</strong> reports in #{ticket} ({rows.length - merged.length} duplicate rows in the export dropped) ·
-  <strong>{problems.length}</strong> problems · {total === merged.length ? 'every report counted once' : `${merged.length - total} reports missing`}
+  <strong>{problems.length}</strong> problems · {placed === merged.length ? 'every report placed' : `${merged.length - placed} reports not placed`}
 </p>
 
 <table>
@@ -26,7 +26,7 @@
     {#each problems as p (p.problem)}
       <tr>
         <td><code>{p.problem}</code><br /><span class="muted">{p.title}</span></td>
-        <td><strong>{p.reports.length}</strong></td>
+        <td><strong>{p.reports.length}</strong>{#if p.alsoTimezone}<br /><span class="muted">{p.alsoTimezone} also <code>timezone</code></span>{/if}</td>
         <td>{p.tenants.length}</td>
         <td>{p.channels.join(', ')}</td>
         <td>{p.firstSeen} → {p.lastSeen}</td>
